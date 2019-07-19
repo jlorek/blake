@@ -1,0 +1,9 @@
+/Users/xlash/Code/Blake/Blake.Shared/bin/Debug/netstandard2.0/Blake.Shared.deps.json
+/Users/xlash/Code/Blake/Blake.Shared/bin/Debug/netstandard2.0/Blake.Shared.dll
+/Users/xlash/Code/Blake/Blake.Shared/bin/Debug/netstandard2.0/Blake.Shared.pdb
+/Users/xlash/Code/Blake/Blake.Shared/obj/Debug/netstandard2.0/Blake.Shared.csprojAssemblyReference.cache
+/Users/xlash/Code/Blake/Blake.Shared/obj/Debug/netstandard2.0/Blake.Shared.csproj.CoreCompileInputs.cache
+/Users/xlash/Code/Blake/Blake.Shared/obj/Debug/netstandard2.0/Blake.Shared.AssemblyInfoInputs.cache
+/Users/xlash/Code/Blake/Blake.Shared/obj/Debug/netstandard2.0/Blake.Shared.AssemblyInfo.cs
+/Users/xlash/Code/Blake/Blake.Shared/obj/Debug/netstandard2.0/Blake.Shared.dll
+/Users/xlash/Code/Blake/Blake.Shared/obj/Debug/netstandard2.0/Blake.Shared.pdb
