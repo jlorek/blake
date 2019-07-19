@@ -6,53 +6,61 @@
 @inject IJSRuntime JsRuntime;
 
 <style>
+    #container {
+        display: flex;
+        justify-content: space-evenly;
+    }
+    #board {
+        width: 200px;
+    }
+
+    #game {
+        width: calc(@MapSize * @BoxSize * 1px);
+        background: lightblue;
+    }
+
+    #game div {
+        box-sizing: border-box;
+        float: left;
+        width: calc(@BoxSize * 1px);
+        height: calc(@BoxSize * 1px);
+    }
+
     .empty {
-        display: inline-block;
-        border: 1px solid black;
-        width: 20px;
-        height: 20px;
-        background: whitesmoke;
+        border: 1px dotted gray;
     }
 
     .block {
-        display: inline-block;
-        border: 1px solid black;
-        width: 20px;
-        height: 20px;
         background: black;
     }
 
     .apple {
-        display: inline-block;
-        border: 1px solid black;
-        width: 20px;
-        height: 20px;
         background: red;
+        border-radius: 50%;
     }
 
     .player {
-        display: inline-block;
-        border: 1px solid black;
-        width: 20px;
-        height: 20px;
         background: green;
     }
 </style>
 <h1>Snake</h1>
 
-<p>Score: @Score</p>
-<p>State: @_currentState</p>
-<button class="btn btn-primary" @onclick="@StartGame">Start</button>
-<br />
-
-@for (int y = 0; y < MapSize; ++y)
-{
-    @for (int x = 0; x < MapSize; ++x)
-    {
-        <span class="@ObjectToString((Screen[x,y]))" />
-    }
-    <br />
-}
+<div id="container">
+    <div id="game">
+        @for (int y = 0; y < MapSize; ++y)
+        {
+            @for (int x = 0; x < MapSize; ++x)
+            {
+                <div class="@ObjectToString((Screen[x,y]))" />
+            }
+        }
+    </div>
+    <div id="board">
+        <p>Score: @Score</p>
+        <p>State: @_currentState</p>
+        <button class="btn btn-primary" @onclick="@StartGame">Start</button>
+    </div>
+</div>
 
 @code {
     private enum Tile {
@@ -75,6 +83,7 @@
         GameOver
     }
 
+    const int BoxSize = 24;
     const int MapSize = 20;
     const int GameLoopMs = 250;
 
@@ -94,20 +103,7 @@
     private int _gameLoopMs = GameLoopMs;
 
     private Direction _currentDirection = Direction.Right;
-    private Direction CurrentDirection {
-        get { return _currentDirection; }
-        set {
-            if ((_currentDirection == Direction.Up && value == Direction.Down) ||
-                (_currentDirection == Direction.Down && value == Direction.Up) ||
-                (_currentDirection == Direction.Right && value == Direction.Left) ||
-                (_currentDirection == Direction.Left && value == Direction.Right))
-            {
-                return;
-            }
-
-            _currentDirection = value;
-        }
-    }
+    private Direction _newDirection = Direction.Right;
 
     Dictionary<string[], Direction> InputMapping = new Dictionary<string[], Direction> {
       { new string[] { "ArrowUp", "KeyW" }, Direction.Up },
@@ -155,6 +151,7 @@
         _gameLoopMs = GameLoopMs;
         _currentState = GameState.Running;
         _currentDirection = Direction.Right;
+        _newDirection = Direction.Right;
 
         Blocks.Clear();
         for (int y = 0; y < MapSize; ++y) {
@@ -183,7 +180,7 @@
         Console.WriteLine($"Input: {jsKeyCode}");
         var input = InputMapping.FirstOrDefault(kvp => kvp.Key.Contains(jsKeyCode));
         if (!input.Equals(default)) {
-            CurrentDirection = input.Value;
+            _newDirection = input.Value;
         }
 
         return "Thanks from C#!";
@@ -212,10 +209,24 @@
         Apple = (x, y);
     }
 
+    private void UpdateDirection() {
+        if ((_currentDirection == Direction.Up && _newDirection == Direction.Down) ||
+            (_currentDirection == Direction.Down && _newDirection == Direction.Up) ||
+            (_currentDirection == Direction.Right && _newDirection == Direction.Left) ||
+            (_currentDirection == Direction.Left && _newDirection == Direction.Right))
+            {
+                return;
+            }
+
+        _currentDirection = _newDirection;
+    }
+
     private void UpdateScreen() {
+        UpdateDirection();
+
         // Move Player
         var (pX, pY) = Player.Last();
-        switch (CurrentDirection) {
+        switch (_currentDirection) {
             case Direction.Up:
                 pY = pY - 1;
                 break;
